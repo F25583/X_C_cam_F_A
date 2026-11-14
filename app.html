@@ -2,28 +2,31 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>AI Pro Video Enhancer & Magnifier (WebGL Engine)</title>
+    <title>AI Pro Video Enhancer & Magnifier</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
         body { background-color: #121212; color: #ffffff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
+        /* الشريط العلوي للأدوات */
         .top-bar { background: #1e1e1e; padding: 10px 20px; display: flex; gap: 15px; align-items: center; border-bottom: 1px solid #333; z-index: 100; }
         .btn { background: #2d2d2d; color: white; border: 1px solid #444; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .btn:hover { background: #3d3d3d; border-color: #4CAF50; }
         .btn-primary { background: #4CAF50; border-color: #4CAF50; color: white; }
         .btn-primary:hover { background: #45a049; }
         
+        /* منطقة العمل الرئيسية */
         .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
         
+        /* شاشة عرض الفيديو */
         .video-container { flex: 1; background: #000; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        /* إخفاء الفيديو الخام واستبداله بلوحة معالجة الذكاء الاصطناعي WebGL */
-        video { display: none; }
-        canvas { max-width: 100%; max-height: 100%; transition: transform 0.05s ease-out; }
+        video { max-width: 100%; max-height: 100%; transition: transform 0.05s ease-out; image-rendering: crisp-edges; }
         
+        /* طبقة التحديد بالماوس */
         #selection-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; display: none; z-index: 50; background: rgba(0,0,0,0.2); }
         #selection-box { position: absolute; border: 2px dashed #4CAF50; background: rgba(76, 175, 80, 0.2); display: none; pointer-events: none; }
 
-        .sidebar { width: 310px; background: #1a1a1a; border-right: 1px solid #333; padding: 15px; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; gap: 12px; }
+        /* لوحة التحكم الجانبية */
+        .sidebar { width: 300px; background: #1a1a1a; border-right: 1px solid #333; padding: 15px; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; gap: 15px; }
         .control-group { background: #242424; padding: 12px; border-radius: 8px; border: 1px solid #333; }
         .control-group h4 { color: #4CAF50; font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }
         .slider-row { margin-bottom: 10px; }
@@ -31,7 +34,6 @@
         .slider-row span { color: #4CAF50; font-weight: bold; }
         input[type="range"] { width: 100%; cursor: pointer; accent-color: #4CAF50; }
         .checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer; }
-        .video-controls { background: #242424; padding: 10px; border-radius: 8px; display: flex; gap: 10px; justify-content: center; }
     </style>
 </head>
 <body>
@@ -48,32 +50,13 @@
 
     <div class="workspace">
         <div class="video-container" id="video-container">
-            <video id="main-video" autoplay playsinline></video>
-            <canvas id="gl-canvas"></canvas>
+            <video id="main-video" controls autoplay></video>
             <div id="selection-overlay">
                 <div id="selection-box"></div>
             </div>
         </div>
 
         <div class="sidebar">
-            <div class="video-controls" id="playback-controls" style="display: none;">
-                <button class="btn" id="play-pause-btn">⏯️ تشغيل / إيقاف</button>
-                <button class="btn" id="step-back-btn">⏪ -5ث</button>
-                <button class="btn" id="step-fwd-btn">⏩ +5ث</button>
-            </div>
-
-            <div class="control-group">
-                <h4>🧠 معالج الملامح ومنع البكسلة (WebGL AI)</h4>
-                <div class="slider-row">
-                    <label>تصفية ضوضاء الكاميرا (Denoise): <span id="denoise-val">0%</span></label>
-                    <input type="range" id="denoise-slider" min="0" max="1" step="0.05" value="0">
-                </div>
-                <div class="slider-row">
-                    <label>إعادة بناء الملامح (AI CAS Sharp): <span id="sharp-val">0%</span></label>
-                    <input type="range" id="sharp-slider" min="0" max="2" step="0.05" value="0">
-                </div>
-            </div>
-
             <div class="control-group">
                 <h4>🔍 الزوم والتحريك اليدوي</h4>
                 <div class="slider-row">
@@ -91,14 +74,14 @@
             </div>
 
             <div class="control-group">
-                <h4>☀️ الإضاءة والتباين</h4>
+                <h4>✨ تحسين النقاء والإضاءة</h4>
                 <div class="slider-row">
                     <label>مستوى الإضاءة: <span id="light-val">100%</span></label>
                     <input type="range" id="light-slider" min="30" max="300" step="5" value="100">
                 </div>
                 <div class="slider-row">
-                    <label>حدة التباين (Contrast): <span id="contrast-val">100%</span></label>
-                    <input type="range" id="contrast-slider" min="50" max="250" step="5" value="100">
+                    <label>شحذ الحواف (AI Sharp): <span id="sharp-val">+0%</span></label>
+                    <input type="range" id="sharp-slider" min="0" max="15" step="0.5" value="0">
                 </div>
             </div>
 
