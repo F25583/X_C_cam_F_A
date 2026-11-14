@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "AI Pro Video Enhancer & Magnifier",
+  "version": "3.0",
+  "description": "مشغل ومحسن فيديو ذكي مستقل لتشغيل الملفات والتقاط الشاشة مع زوم فائق وتحديد بالماوس",
+  "permissions": ["desktopCapture"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "فتح مشغل ومحسن الفيديو الذكي"
+  }
+}
