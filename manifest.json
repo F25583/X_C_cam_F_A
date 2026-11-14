@@ -2,22 +2,12 @@
   "manifest_version": 3,
   "name": "AI Pro Video Enhancer & Magnifier",
   "version": "3.0",
-  "description": "FADY_محسن جودة الكامير",
+  "description": "مشغل ومحسن فيديو FADY",
   "permissions": ["desktopCapture"],
-  "icons": {
-    "16": "icon.png",
-    "48": "icon.png",
-    "128": "icon.png"
-  },
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "فتح مشغل ومحسن الفيديو الذكي",
-    "default_icon": {
-      "16": "icon.png",
-      "48": "icon.png",
-      "128": "icon.png"
-    }
+    "default_title": "فتح مشغل ومحسن الفيديو الذكي"
   }
 }
