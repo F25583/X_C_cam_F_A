@@ -19,11 +19,8 @@
         
         /* شاشة عرض الفيديو */
         .video-container { flex: 1; background: #000; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        video { max-width: 100%; max-height: 100%; transition: transform 0.05s ease-out; image-rendering: crisp-edges; }
-        
-        /* طبقة التحديد بالماوس */
-        #selection-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; display: none; z-index: 50; background: rgba(0,0,0,0.2); }
-        #selection-box { position: absolute; border: 2px dashed #4CAF50; background: rgba(76, 175, 80, 0.2); display: none; pointer-events: none; }
+        video { display: none; }
+        canvas { max-width: 100%; max-height: 100%; transition: transform 0.05s ease-out; }
 
         /* لوحة التحكم الجانبية */
         .sidebar { width: 300px; background: #1a1a1a; border-right: 1px solid #333; padding: 15px; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; gap: 15px; }
@@ -44,16 +41,13 @@
             <input type="file" id="file-input" accept="video/*" style="display: none;">
         </label>
         <button class="btn" id="capture-btn">📺 التقاط نافذة أو شاشة</button>
-        <button class="btn" id="roi-btn" style="border-color: #2196F3; color: #64B5F6;">🎯 تحديد منطقة بالماوس (Esc للخروج)</button>
         <button class="btn" id="reset-btn" style="margin-right: auto; color: #ff6b6b;">🔄 إعادة ضبط الكل</button>
     </div>
 
     <div class="workspace">
         <div class="video-container" id="video-container">
-            <video id="main-video" controls autoplay></video>
-            <div id="selection-overlay">
-                <div id="selection-box"></div>
-            </div>
+            <video id="main-video" controls autoplay playsinline></video>
+            <canvas id="gl-canvas"></canvas>
         </div>
 
         <div class="sidebar">
@@ -76,12 +70,16 @@
             <div class="control-group">
                 <h4>✨ تحسين النقاء والإضاءة</h4>
                 <div class="slider-row">
-                    <label>مستوى الإضاءة: <span id="light-val">100%</span></label>
-                    <input type="range" id="light-slider" min="30" max="300" step="5" value="100">
+                    <label>منع التفكك البكسلي (Anti-Pixel): <span id="smooth-val">50%</span></label>
+                    <input type="range" id="smooth-slider" min="0" max="100" step="5" value="50">
                 </div>
                 <div class="slider-row">
                     <label>شحذ الحواف (AI Sharp): <span id="sharp-val">+0%</span></label>
                     <input type="range" id="sharp-slider" min="0" max="15" step="0.5" value="0">
+                </div>
+                <div class="slider-row">
+                    <label>مستوى الإضاءة: <span id="light-val">100%</span></label>
+                    <input type="range" id="light-slider" min="30" max="300" step="5" value="100">
                 </div>
             </div>
 
